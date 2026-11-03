@@ -5,3 +5,5 @@ De eerste versie, rijden en lijn volgen is hiermee functioneel
 
 ## v1.1
 Testen of we de ultrasoon sensoren er bij kunnen werken
+### To-do:
+- [ ] Ultrasoon sensor werken krijgen
