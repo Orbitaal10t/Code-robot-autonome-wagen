@@ -2,7 +2,7 @@ from microbit import *
 import sensoren
 import motoren
 
-zoek_einde = False
+
 uitvoeren = False
 draaien_rechts = False
 draaien_links = False
@@ -28,7 +28,6 @@ while True:
         if draaien_rechts:
             if links == 1 and AV >= 15:
                 motoren.stoppen()
-                zoek_einde = False
                 draaien_rechts = False
                 sleep(100)
             else:
@@ -37,7 +36,6 @@ while True:
         elif draaien_links:
             if rechts == 1 and AV >= 15:
                 motoren.stoppen()
-                zoek_einde = False
                 draaien_links = False
                 sleep(100)
             else:
