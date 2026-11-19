@@ -58,6 +58,8 @@ while True:
             motoren.rechts_bijsturen()
 
         elif links == 1 and rechts == 1:
+            motoren.stoppen()
+            sleep(100)
             AR = sensoren.afstand_rechts()
             AL = sensoren.afstand_links()
             if AR >= 10:
