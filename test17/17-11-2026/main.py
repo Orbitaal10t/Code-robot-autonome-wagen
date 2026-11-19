@@ -30,6 +30,7 @@ while True:
                 motoren.stoppen()
                 zoek_einde = False
                 draaien_rechts = False
+                sleep(100)
             else:
                 motoren.rechts_draaien()
 
@@ -38,6 +39,7 @@ while True:
                 motoren.stoppen()
                 zoek_einde = False
                 draaien_links = False
+                sleep(100)
             else:
                 motoren.links_draaien()
 
