@@ -4,32 +4,38 @@
 from microbit import *
 
 # Welke pin hoort bij welke motorrichting
-rv = pin12   # rechts vooruit
-ra = pin8    # rechts achteruit
-lv = pin16   # links vooruit
-la = pin0    # links achteruit
+rechts_vooruit = pin12       # rechts vooruit
+rechts_achteruit = pin8      # rechts achteruit
+links_vooruit = pin16        # links vooruit
+links_achteruit = pin0       # links achteruit
 
 # PWM-frequentie: hoe vaak per seconde de pin aan/uit schakelt
 frequentie = 500                    # Hz
-periode = 1000000 // frequentie     # in microseconden (// = delen zonder komma)
+periode = 1000000 // frequentie
 
-# Snelheden. PWM-waarde van 0 (uit) tot 1023 (vol)
-SNEL = 600       # normaal vooruit
-BIJSTUREN = 300  # langzame kant bij bijsturen
-DRAAIEN = 300    # snelheid bij draaien op de plek
+
+# Snelheden, duty-cycle in %
+SNEL = 60       # normaal vooruit
+BIJSTUREN = 30  # langzame kant bij bijsturen
+DRAAIEN = 30    # snelheid bij draaien op de plek
+
+# omrekening van duty-cycle in percentage naar PWM-signaal
+snel = 100 // 1023 *  SNEL
+bijsturen = 100 // 1023 *  BIJSTUREN
+draaien = 100 // 1023 *  DRAAIEN
 
 # Stel voor alle vier de pinnen de PWM-periode in
-for pin in [rv, ra, lv, la]:
+for pin in [rechts_vooruit, rechts_achteruit, links_vooruit, links_achteruit]:
     pin.set_analog_period_microseconds(periode)
 
 
 def motoren(rechts_v, links_v, rechts_a, links_a):
     # De basisfunctie: zet een snelheid op alle vier de pinnen.
     # Alle functies hieronder gebruiken deze.
-    rv.write_analog(rechts_v)
-    lv.write_analog(links_v)
-    ra.write_analog(rechts_a)
-    la.write_analog(links_a)
+    rechts_vooruit.write_analog(rechts_v)
+    rechts_achteruit.write_analog(links_v)
+    links_vooruit.write_analog(rechts_a)
+    links_achteruit.write_analog(links_a)
 
 
 def vooruit():
