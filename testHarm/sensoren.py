@@ -5,14 +5,13 @@ from microbit import *
 import time
 import machine
 
-
+# owrd gevraagd door main
 def meet_lijnsensoren():
-    # Lees de twee lijnsensoren uit.
-    # read_digital() geeft 1 (lijn gezien) of 0 (geen lijn).
-    links = pin2.read_digital()
-    rechts = pin9.read_digital()
-    # print(links, rechts)   # alleen aanzetten tijdens testen: print maakt de lus traag
-    return links, rechts       # geeft twee waarden tegelijk terug
+    # lijnsensoren uitmeten, 1 is lijn 0 is geen lijn
+    lijn_links = pin2.read_digital()
+    lijn_rechts = pin9.read_digital()
+    return lijn_links, lijn_rechts       
+    # geeft twee waarden tegelijk terug
 
 
 def meet_afstand(trig, echo):
