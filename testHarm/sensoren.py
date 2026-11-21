@@ -1,5 +1,5 @@
 # sensoren.py
-# Alle functies die iets meten. main.py roept deze aan.
+# alle functies die iets met meten te maken hebben
 
 from microbit import *
 import time
@@ -15,33 +15,26 @@ def meet_lijnsensoren():
 
 
 def meet_afstand(trig, echo):
-    # Meet de afstand met een ultrasoonsensor (HC-SR04).
-    #   trig = de pin waarop we de sensor laten "piepen"
-    #   echo = de pin waarop de sensor het antwoord teruggeeft
-    # Welke pinnen dat zijn, bepaalt degene die deze functie aanroept.
+    # de pinnen worden aangeroepen via de aanroep zelf
 
-    # 1. Korte triggerpuls van 10 microseconden geven
+    # 1. korte triggerpuls van 10 microseconden geven
     trig.write_digital(0)
     time.sleep_us(2)
     trig.write_digital(1)
     time.sleep_us(10)
     trig.write_digital(0)
 
-    # 2. Meten hoe lang de echo-pin hoog (1) blijft, maximaal 3000 us wachten.
-    #    3000 us komt overeen met ongeveer 51 cm.
+    # 2. meten hoe lang de echo-pin hoog (1) blijft, maximaal 3000 us wachten.
     tijd = machine.time_pulse_us(echo, 1, 3000)
 
-    # 3. Geen echo binnen de tijd? Dan geeft time_pulse_us een negatief getal (-1 of -2).
-    #    Dat betekent: niets binnen bereik, dus vrij. We geven dan een groot getal terug.
+    # 3. geen echo? dan negatief getal, buiten bereik dus hoog getal terug geven:
     if tijd < 0:
         return 999
 
-    # 4. Tijd omrekenen naar centimeters (geluid heen en terug: delen door 58)
+    # 4. tijd omrekenen naar cm, komt uit datasheet
     return tijd / 58
 
-
-# Korte functies die alleen de juiste pinnen invullen.
-# Zo staat in main.py een duidelijke naam in plaats van pinnummers.
+# alleen juiste pins invullen
 def afstand_vooruit():
     return meet_afstand(pin1, pin13)
 
