@@ -11,9 +11,12 @@ from microbit import *
 import sensoren
 import motoren
 
+#defines
 uitvoeren = False       # rijdt de wagen? (knop A = start, knop B = stop)
 draaien = None          # None = niet draaien, anders 'rechts_draaien' of 'links_draaien'
 draai_start = 0         # moment waar het draaien begint om op verder te tellen
+
+# in tevullen waardes:
 MIN_DRAAITIJD = 300     # minimale tijd in ms dat de robot moet draaien
 DRAAI_AFSTAND = 10      # afstand in cm
 MOMENT_WEGHALEN = 500   # het aantal ms dat de wagen stopt om het moment uit de wagen te halen
