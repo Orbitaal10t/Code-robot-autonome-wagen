@@ -26,6 +26,9 @@ DRAAIEN = DRAAIEN_PROCENT * 1023 // 100
 # van frequentie naar periode in microseconden
 periode = 1000000 // FREQUENTIE
 
+# onthoudt wat de motoren nu doen, zodat communicatie.py dit kan doorsturen
+actie = 'stoppen'
+
 # stel voor alle vier de pinnen de PWM-periode in
 for pin in [rechts_vooruit, rechts_achteruit, links_vooruit, links_achteruit]:
     pin.set_analog_period_microseconds(periode)
@@ -39,23 +42,35 @@ def motoren(rechts_v, links_v, rechts_a, links_a):
 
 
 def vooruit():
+    global actie
+    actie = 'vooruit'
     motoren(SNEL, SNEL, 0, 0)
 
 def links_bijsturen():
+    global actie
+    actie = 'links_bijsturen'
     # rechts sneller dan links, dus de wagen gaat naar links
     motoren(SNEL, BIJSTUREN, 0, 0)
 
 def rechts_bijsturen():
+    global actie
+    actie = 'rechts_bijsturen'
     # links sneller dan rechts, dus de wagen gaat naar rechts
     motoren(BIJSTUREN, SNEL, 0, 0)
 
 def stoppen():
+    global actie
+    actie = 'stoppen'
     motoren(0, 0, 0, 0)
 
 def rechts_draaien():
+    global actie
+    actie = 'rechts_draaien'
     # links vooruit, rechts achteruit: draaien op de plek naar rechts
     motoren(0, DRAAIEN, DRAAIEN, 0)
 
 def links_draaien():
+    global actie
+    actie = 'links_draaien'
     # rechts vooruit, links achteruit: draaien op de plek naar links
     motoren(DRAAIEN, 0, 0, DRAAIEN)

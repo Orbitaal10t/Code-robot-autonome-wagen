@@ -6,15 +6,19 @@
 #    3. kruising           beide lijnsensoren zien een lijn en er wordt rechtdoor, rechts of links gekozen.
 #    4. lijnen volgen      dus recht door rijden.
 # de eerste toestand die waar is wordt uitgevoerd, de rest wordt die ronde overgeslagen.
+# aan het eind van elke ronde stuurt communicatie.py (5x per seconde) de metingen naar de computer.
 
 from microbit import *
 import sensoren
 import motoren
+import communicatie
 
 #defines
 uitvoeren = False       # rijdt de wagen? (knop A = start, knop B = stop)
 draaien = None          # None = niet draaien, anders 'rechts_draaien' of 'links_draaien'
 draai_start = 0         # moment waar het draaien begint om op verder te tellen
+afstand_rechts = None   # None = nog niet gemeten sinds het laatste radiobericht
+afstand_links = None
 
 # in tevullen waardes:
 MIN_DRAAITIJD = 300     # minimale tijd in ms dat de robot moet draaien
@@ -36,6 +40,17 @@ while True:
         motoren.stoppen()
 
     if not uitvoeren:
+        # wagen staat stil: alle sensoren meten en versturen,
+        # zo kun je met je hand testen of alles werkt
+        if communicatie.tijd_voor_bericht():
+            lijn_links, lijn_rechts = sensoren.meet_lijnsensoren()
+            vooruit = sensoren.afstand_vooruit()
+            sleep(20)   # even wachten zodat de echo van de vorige sensor weg is
+            rechts = sensoren.afstand_rechts()
+            sleep(20)
+            links = sensoren.afstand_links()
+            communicatie.verstuur(uitvoeren, draaien, motoren.actie,
+                                  lijn_links, lijn_rechts, vooruit, rechts, links)
         continue        # ga verder met de volgende "while True" ronde
 
     # uit lezen van sensoren:
@@ -72,20 +87,23 @@ while True:
 
     # toestand 3: kruising, beide lijnsensoren zien een lijn en er wordt iets gekozen
     elif lijn_links == 1 and lijn_rechts == 1:
-        if sensoren.afstand_rechts() >= DRAAI_AFSTAND:
+        afstand_rechts = sensoren.afstand_rechts()      # onthouden voor de radio
+        if afstand_rechts >= DRAAI_AFSTAND:
             motoren.stoppen()
             sleep(MOMENT_WEGHALEN)
             draaien = 'rechts_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
             motoren.rechts_draaien()
-        elif sensoren.afstand_links() >= DRAAI_AFSTAND:   # afstand_links alleen meten als rechts dicht is
-            motoren.stoppen()
-            sleep(MOMENT_WEGHALEN)
-            draaien = 'links_draaien'
-            draai_start = running_time()    # onthoud wanneer het draaien begon
-            motoren.links_draaien()
         else:
-            motoren.vooruit()
+            afstand_links = sensoren.afstand_links()    # afstand_links alleen meten als rechts dicht is
+            if afstand_links >= DRAAI_AFSTAND:
+                motoren.stoppen()
+                sleep(MOMENT_WEGHALEN)
+                draaien = 'links_draaien'
+                draai_start = running_time()    # onthoud wanneer het draaien begon
+                motoren.links_draaien()
+            else:
+                motoren.vooruit()
 
     # toestand 4: lijn volgen, recht door rijden en lijn volgen
     elif lijn_links == 0 and lijn_rechts == 0:
@@ -96,3 +114,11 @@ while True:
 
     elif lijn_links == 0 and lijn_rechts == 1:
         motoren.rechts_bijsturen()
+
+    # metingen doorsturen naar de computer (communicatie.py bepaalt of het al tijd is)
+    if communicatie.tijd_voor_bericht():
+        communicatie.verstuur(uitvoeren, draaien, motoren.actie, lijn_links, lijn_rechts,
+                              afstand_vooruit, afstand_rechts, afstand_links)
+        # links en rechts zijn verstuurd, weer leeg maken tot de volgende kruising
+        afstand_rechts = None
+        afstand_links = None
