@@ -1,6 +1,7 @@
 # communicatie.py
 # alles wat met de radio te maken heeft.
-# de wagen stuurt 5x per seconde wat de sensoren zien naar de micro:bit aan de computer.
+# de wagen stuurt 5x per seconde wat de sensoren zien naar de micro:bit aan de computer,
+# en luistert of de computer START of STOP stuurt.
 
 from microbit import running_time
 import radio
@@ -63,3 +64,17 @@ def verstuur(uitvoeren, draaien, actie, lijn_links, lijn_rechts, vooruit, rechts
 
     laatste_bericht = running_time()
     teller = (teller + 1) % 1000        # na 999 weer bij 0 beginnen
+
+
+def ontvang_opdracht():
+    # kijkt of er een opdracht van de computer binnen is.
+    # geeft 'START', 'STOP' of None (niets ontvangen) terug.
+    try:
+        bericht = radio.receive()       # None als er niets is
+    except ValueError:
+        return None                     # kapot bericht, negeren
+    if bericht and bericht.startswith('CMD,'):
+        opdracht = bericht[4:]          # alles na 'CMD,'
+        if opdracht in ('START', 'STOP'):
+            return opdracht
+    return None

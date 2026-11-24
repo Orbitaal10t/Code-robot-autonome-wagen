@@ -1,7 +1,8 @@
 # main.py (ontvanger)
 # deze micro:bit zit met USB aan de computer.
-# hij vangt de radioberichten van de wagen op en stuurt ze via USB door
-# naar de website htools.nl/robot.
+# 1. hij vangt de radioberichten van de wagen op en stuurt ze via USB door
+#    naar de website htools.nl/robot.
+# 2. stuurt de website START of STOP, dan zendt hij dat via de radio naar de wagen.
 # op het display: knipperende stip = er komen berichten binnen, kruis = niets van de wagen.
 
 from microbit import *
@@ -11,17 +12,19 @@ import radio
 RADIO_GROEP = 42
 RADIO_KANAAL = 7
 
-radio.config(group=RADIO_GROEP, channel=RADIO_KANAAL, length=64)
+radio.config(group=RADIO_GROEP, channel=RADIO_KANAAL, length=64, power=7)
 radio.on()
 
 laatste_bericht = 0     # moment van het laatst ontvangen bericht
 laatste_levensteken = 0 # moment van het laatste "ik leef nog" bericht naar de website
 stip_aan = False
+usb_tekst = ''          # wat er van de website binnenkomt, tot er een hele regel is
 
 display.show(Image.NO)
 print('ONTV,start')
 
 while True:
+    # ---- 1. radio van de wagen -> USB naar de website ----
     # receive_full geeft (bericht, signaalsterkte, tijd) of None als er niets is
     pakket = radio.receive_full()
 
@@ -42,6 +45,24 @@ while True:
             stip_aan = not stip_aan
             display.clear()
             display.set_pixel(2, 2, 9 if stip_aan else 3)
+
+    # ---- 2. USB van de website -> radio naar de wagen ----
+    if uart.any():
+        data = uart.read()
+        if data:
+            try:
+                usb_tekst += str(data, 'utf8')
+            except:
+                usb_tekst = ''
+            # zolang er een hele regel (met Enter) is: die afhandelen
+            while '\n' in usb_tekst:
+                regel, usb_tekst = usb_tekst.split('\n', 1)
+                regel = regel.strip()
+                if regel == 'START' or regel == 'STOP':
+                    radio.send('CMD,' + regel)
+                    print('ONTV,verstuurd,' + regel)
+            if len(usb_tekst) > 50:
+                usb_tekst = ''      # rommel zonder Enter, weggooien
 
     nu = running_time()
 

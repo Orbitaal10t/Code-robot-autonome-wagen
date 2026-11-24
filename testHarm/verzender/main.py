@@ -14,7 +14,7 @@ import motoren
 import communicatie
 
 #defines
-uitvoeren = False       # rijdt de wagen? (knop A = start, knop B = stop)
+uitvoeren = False       # rijdt de wagen? (knop A of website = start, knop B of website = stop)
 draaien = None          # None = niet draaien, anders 'rechts_draaien' of 'links_draaien'
 draai_start = 0         # moment waar het draaien begint om op verder te tellen
 afstand_rechts = None   # None = nog niet gemeten sinds het laatste radiobericht
@@ -30,11 +30,14 @@ motoren.stoppen()
 print('configured for flight')
 
 while True:
-    if button_a.was_pressed() and not uitvoeren:
+    # starten en stoppen kan met de knoppen of op afstand via de website
+    opdracht = communicatie.ontvang_opdracht()     # 'START', 'STOP' of None
+
+    if (button_a.was_pressed() or opdracht == 'START') and not uitvoeren:
         uitvoeren = True
         print('start')
 
-    if button_b.was_pressed() and uitvoeren:
+    if (button_b.was_pressed() or opdracht == 'STOP') and uitvoeren:
         uitvoeren = False
         draaien = None
         motoren.stoppen()

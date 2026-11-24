@@ -11,6 +11,8 @@ Zet alle vier de bestanden op de micro:bit in de wagen:
 Zet alleen `ontvanger/main.py` op de tweede micro:bit en laat hem met USB aan de computer zitten.
 Open daarna https://htools.nl/robot in Chrome of Edge en klik op "Verbinden".
 
+Met Start en Stop op de website (spatiebalk = stop) start en stop je de wagen op afstand; de ontvanger stuurt dan `CMD,START` of `CMD,STOP` via de radio. Knop A en B blijven werken.
+
 Display van de ontvanger: knipperende stip = berichten van de wagen, kruis = niets ontvangen.
 
 ## Pinnen
