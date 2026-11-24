@@ -25,6 +25,7 @@ while True:
         links, rechts = sensoren.meet_lijnsensoren()
         AV = sensoren.afstand_vooruit()
         geluid=sensoren.geluid_nivea()
+        heuvel=sensoren.heuvel_detectie()
         if draaien_rechts:
             if links == 1 and AV >= 7:
                 motoren.stoppen()
@@ -42,6 +43,9 @@ while True:
                 motoren.links_draaien()
                 
         elif geluid>=120:
+            motoren.stoppen()
+
+        elif heuvel < 30:
             motoren.stoppen()
             
         elif AV <= 6:
@@ -62,13 +66,22 @@ while True:
                         motoren.links_draaien()
 
         elif links == 0 and rechts == 0:
-            motoren.vooruit()
+            if heuvel>65:
+                motoren.vooruit_langzaam()
+            else:
+                motoren.vooruit()
 
         elif links == 1 and rechts == 0:
-            motoren.links_bijsturen()
+            if heuvel>65:
+                motoren.links_bijsturen_langzaam()
+            else:
+                motoren.links_bijsturen()
 
         elif links == 0 and rechts == 1:
-            motoren.rechts_bijsturen()
+            if heuvel>65:
+                motoren.rechts_bijsturen_langzaam()
+            else:
+                motoren.rechts_bijsturen()
 
         elif links == 1 and rechts == 1:
             zoek_einde = True
