@@ -28,6 +28,15 @@ def meet_afstand(trig, echo):
     tijd = machine.time_pulse_us(echo, 1, 3000)
 
     # 3. geen echo? dan negatief getal, buiten bereik dus hoog getal terug geven:
+    #    999 betekent voor main.py "vrij" (verder dan ca. 51 cm).
+    #    LET OP, hier kan 999 ook onterecht "vrij" zeggen:
+    #    - sensor of draadje los/kapot: nooit een echo, dus altijd 999.
+    #      voorsensor kapot = wagen stopt NIET meer voor een obstakel (<= 4 wordt nooit waar),
+    #      zijsensor kapot = wagen draait bij een kruising een dichte kant in.
+    #    - zachte of schuine oppervlakken (stof, schuin karton) kaatsen het geluid weg: ook 999.
+    #    - heel dichtbij (minder dan ca. 2 cm) meet de sensor onbetrouwbaar.
+    #    time_pulse_us geeft -2 als de echo nooit begint (sensor kapot/los)
+    #    en -1 als de echo te lang duurt (echt buiten bereik), zo zijn die twee uit elkaar te houden.
     if tijd < 0:
         return 999
 
