@@ -75,6 +75,13 @@ while True:
         if sensoren.afstand_rechts() >= DRAAI_AFSTAND:
             motoren.stoppen()
             sleep(MOMENT_WEGHALEN)
+            
+            while snensoren.afstand_vooruit () <= ACHTERUIT_AFSTAND:
+                motoren.achteruit()
+                sleep(60)
+            motoren.stoppen
+            sleep(MOMENT_WEGHALEN)
+            
             draaien = 'rechts_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
             motoren.rechts_draaien()
