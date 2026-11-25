@@ -21,8 +21,8 @@ afstand_rechts = None   # None = nog niet gemeten sinds het laatste radiobericht
 afstand_links = None
 
 # in tevullen waardes:
-MIN_DRAAITIJD = 300     # minimale tijd in ms dat de robot moet draaien
-DRAAI_AFSTAND = 10      # afstand in cm
+MIN_DRAAITIJD = 800     # minimale tijd in ms dat de robot moet draaien
+DRAAI_AFSTAND = 15      # afstand in cm
 MOMENT_WEGHALEN = 500   # het aantal ms dat de wagen stopt om het moment uit de wagen te halen
 
 display.off()       # display uit, zodat pinnen 3, 4 en 9 vrij zijn voor de sensoren
@@ -66,7 +66,7 @@ while True:
         lang_genoeg = running_time() - draai_start >= MIN_DRAAITIJD  # True wanneer lang genoeg gedraaid
         # zo wordt de evt lijn waar hij op zit genegeerd
         # daarna draaien tot de lijn weer goed onder de wagen ligt
-        if lang_genoeg and lijn_rechts == 1 and lijn_links == 0 and afstand_vooruit >= 15:
+        if lang_genoeg and lijn_rechts == 0 and lijn_links == 1 and afstand_vooruit >= 25:
             motoren.stoppen()
             draaien = None
             sleep(MOMENT_WEGHALEN)  # het volledige moment er uit halen
@@ -77,7 +77,7 @@ while True:
         lang_genoeg = running_time() - draai_start >= MIN_DRAAITIJD  # True wanneer lang genoeg gedraaid
         # zo wordt de evt lijn waar hij op zit genegeerd
         # daarna draaien tot de lijn weer goed onder de wagen ligt
-        if lang_genoeg and lijn_links == 1 and lijn_rechts == 0 and afstand_vooruit >= 15:
+        if lang_genoeg and lijn_links == 0 and lijn_rechts == 1 and afstand_vooruit >= 25:
             motoren.stoppen()
             draaien = None
             sleep(MOMENT_WEGHALEN)
@@ -93,6 +93,9 @@ while True:
         afstand_rechts = sensoren.afstand_rechts()      # onthouden voor de radio
         if afstand_rechts >= DRAAI_AFSTAND:
             motoren.stoppen()
+            sleep(MOMENT_WEGHALEN)
+            motoren.achteruit()
+            TOT AFSTAND 9CM IS, OOK IN LINKS DRAAIEN ZETTEN
             sleep(MOMENT_WEGHALEN)
             draaien = 'rechts_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
