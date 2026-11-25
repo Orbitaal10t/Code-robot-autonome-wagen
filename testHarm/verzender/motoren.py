@@ -15,7 +15,7 @@ FREQUENTIE = 500        # in Hz
 
 # Snelheden, duty-cycle in %
 SNEL_PROCENT = 60       # normaal vooruit
-BIJSTUREN_PROCENT = 30  # langzame kant bij bijsturen
+BIJSTUREN_PROCENT = 45  # langzame kant bij bijsturen
 DRAAIEN_PROCENT = 30    # snelheid bij draaien op de plek
 
 # omrekeningen:
@@ -74,3 +74,9 @@ def links_draaien():
     actie = 'links_draaien'
     # rechts vooruit, links achteruit: draaien op de plek naar links
     motoren(DRAAIEN, 0, 0, DRAAIEN)
+
+def achteruit():
+    global actie
+    actie = 'achteruit'
+    # rechts achteruit, links achteruit: achteruit rijden
+    motoren(0, 0, SNEL, SNEL)
