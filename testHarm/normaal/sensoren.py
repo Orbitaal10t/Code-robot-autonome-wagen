@@ -29,7 +29,7 @@ def meet_afstand(trig, echo):
 
     # 3. geen echo? dan negatief getal, buiten bereik dus hoog getal terug geven:
     if tijd < 0:
-        return -1
+        return 999
 
     # 4. tijd omrekenen naar cm, komt uit datasheet
     return tijd / 58

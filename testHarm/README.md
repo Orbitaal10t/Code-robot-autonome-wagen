@@ -1,15 +1,13 @@
 # testHarm
 
 Er zijn twee versies:
-- `zonder_communicatie/` - de wagen zonder radio. **Hierin passen we de code aan.**
-- `met_communicatie/` - dezelfde wagen met radio naar de computer (htools.nl/robot). Wordt pas bijgewerkt als we met radio gaan testen.
-
-`motoren.py` en `sensoren.py` zijn in beide versies gelijk; alleen `main.py` verschilt (plus `communicatie.py` en de ontvanger).
+- `normaal/` - de wagen zonder radio, precies zoals voordat de communicatie erin kwam (commit acdae7b). **Hierin passen we de code aan.**
+- `met_communicatie/` - de wagen met radio naar de computer (htools.nl/robot). Wordt pas bijgewerkt als we met radio gaan testen.
 
 Elke map heeft een `.hex`: sleep die naar de micro:bit (of open hem in python.microbit.org), dan staan alle bestanden er in een keer op.
 
-## zonder_communicatie (micro:bit in de wagen)
-`wagen_zonder_radio.hex`, of zet `main.py`, `sensoren.py` en `motoren.py` op de micro:bit.
+## normaal (micro:bit in de wagen)
+`test_harm.hex`, of zet `main.py`, `sensoren.py` en `motoren.py` op de micro:bit.
 Knop A = start, knop B = stop.
 
 # met_communicatie

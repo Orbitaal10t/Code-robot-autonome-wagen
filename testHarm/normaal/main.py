@@ -1,4 +1,4 @@
-# main.py  (versie ZONDER radio)
+# main.py
 
 # er zijn 4 toestanden die de wagen aan kan nemen, in volgorde van prioriteit:
 #    1. draaien            draaien naar links of rechts en draait tot de lijn weer gevonden is.
@@ -17,20 +17,9 @@ draaien = None          # None = niet draaien, anders 'rechts_draaien' of 'links
 draai_start = 0         # moment waar het draaien begint om op verder te tellen
 
 # in tevullen waardes:
-MIN_DRAAITIJD = 800     # minimale tijd in ms dat de robot moet draaien
-DRAAI_AFSTAND = 15      # in cm, wanneer de weg vrij is om daar heen te draaien
+MIN_DRAAITIJD = 300     # minimale tijd in ms dat de robot moet draaien
+DRAAI_AFSTAND = 10      # afstand in cm
 MOMENT_WEGHALEN = 500   # het aantal ms dat de wagen stopt om het moment uit de wagen te halen
-ACHTERUIT_AFSTAND = 9   # in cm, wat ver de voorste sensor moet zien om te stoppen met achteruit rijden
-
-
-def achteruit_tot_afstand():
-    # achteruit rijden tot de voorste sensor minstens ACHTERUIT_AFSTAND meet.
-    # let op: zolang deze lus loopt doet de rest van de code niets.
-    while sensoren.afstand_vooruit() < ACHTERUIT_AFSTAND:
-        motoren.achteruit()
-        sleep(60)       # ultrasoon sensor tijd geven tussen twee metingen
-    motoren.stoppen()
-
 
 display.off()       # display uit, zodat pinnen 3, 4 en 9 vrij zijn voor de sensoren
 motoren.stoppen()
@@ -59,7 +48,7 @@ while True:
         lang_genoeg = running_time() - draai_start >= MIN_DRAAITIJD  # True wanneer lang genoeg gedraaid
         # zo wordt de evt lijn waar hij op zit genegeerd
         # daarna draaien tot de lijn weer goed onder de wagen ligt
-        if lang_genoeg and lijn_rechts == 0 and lijn_links == 1 and afstand_vooruit >= 25:
+        if lang_genoeg and lijn_rechts == 1 and lijn_links == 0 and afstand_vooruit >= 15:
             motoren.stoppen()
             draaien = None
             sleep(MOMENT_WEGHALEN)  # het volledige moment er uit halen
@@ -70,7 +59,7 @@ while True:
         lang_genoeg = running_time() - draai_start >= MIN_DRAAITIJD  # True wanneer lang genoeg gedraaid
         # zo wordt de evt lijn waar hij op zit genegeerd
         # daarna draaien tot de lijn weer goed onder de wagen ligt
-        if lang_genoeg and lijn_links == 0 and lijn_rechts == 1 and afstand_vooruit >= 25:
+        if lang_genoeg and lijn_links == 1 and lijn_rechts == 0 and afstand_vooruit >= 15:
             motoren.stoppen()
             draaien = None
             sleep(MOMENT_WEGHALEN)
@@ -86,19 +75,15 @@ while True:
         if sensoren.afstand_rechts() >= DRAAI_AFSTAND:
             motoren.stoppen()
             sleep(MOMENT_WEGHALEN)
-            achteruit_tot_afstand()         # achteruit tot de voorsensor 9 cm ziet
             draaien = 'rechts_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
             motoren.rechts_draaien()
-
         elif sensoren.afstand_links() >= DRAAI_AFSTAND:   # afstand_links alleen meten als rechts dicht is
             motoren.stoppen()
             sleep(MOMENT_WEGHALEN)
-            achteruit_tot_afstand()         # achteruit tot de voorsensor 9 cm ziet
             draaien = 'links_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
             motoren.links_draaien()
-
         else:
             motoren.vooruit()
 
