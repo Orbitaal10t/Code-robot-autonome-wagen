@@ -22,8 +22,9 @@ afstand_links = None
 
 # in tevullen waardes:
 MIN_DRAAITIJD = 800     # minimale tijd in ms dat de robot moet draaien
-DRAAI_AFSTAND = 15      # afstand in cm
+DRAAI_AFSTAND = 15      # in cm, wanneer de weg vrij is om daar heen te draaien
 MOMENT_WEGHALEN = 500   # het aantal ms dat de wagen stopt om het moment uit de wagen te halen
+ACHTERUIT_AFSTAND = 9   # in cm, wat ver de voorste sensor moet zien om te stoppen met achteruit rijden
 
 display.off()       # display uit, zodat pinnen 3, 4 en 9 vrij zijn voor de sensoren
 motoren.stoppen()
@@ -91,15 +92,19 @@ while True:
     # toestand 3: kruising, beide lijnsensoren zien een lijn en er wordt iets gekozen
     elif lijn_links == 1 and lijn_rechts == 1:
         afstand_rechts = sensoren.afstand_rechts()      # onthouden voor de radio
+        # achteruit rijden begint hier
         if afstand_rechts >= DRAAI_AFSTAND:
             motoren.stoppen()
             sleep(MOMENT_WEGHALEN)
             motoren.achteruit()
-            TOT AFSTAND 9CM IS, OOK IN LINKS DRAAIEN ZETTEN
-            sleep(MOMENT_WEGHALEN)
+            while sensor.afstand_vooruit <= ACHTERUIT_AFSTAND: # nu ingesteld op 9cm   
+                sleep(MOMENT_WEGHALEN)    # achteruit rijden stopt hier
+            else:
+                motoren.achteruit()       # achteruit rijden blijft gaan tot de afstand behaald is.
             draaien = 'rechts_draaien'
             draai_start = running_time()    # onthoud wanneer het draaien begon
             motoren.rechts_draaien()
+
         else:
             afstand_links = sensoren.afstand_links()    # afstand_links alleen meten als rechts dicht is
             if afstand_links >= DRAAI_AFSTAND:
